@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- <title>test - busgadget</title> -->
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/cl/cl2.1e178f63.js"></script>
+<script src="/index.d0bdf00f.js" type="module"></script>
+<style>
+    html { font-size: 20px; }
+    button { display: block; width: calc(100% - 2em); font-weight:bold; padding: 1em; margin: 1em; }
+    h2 { color: #5d3026; }
+    a { color: #0000bb; font-family: sans-serif; }
+    @media (prefers-color-scheme:dark) {
+        body {background-color:black; color: white;}
+        button { background-color: black; color: white;}
+        a { color: #00bdfa; }
+        h2 { color: #f8dec0; }
+    }
+
+</style>
+
+<div><a rel="up" href="./">up</a></div>
+<div>wsaddr: <span id="wsaddr"></span> <span id="wsindicator"></span></div>
+<hr>
+
+<button onclick="busCall(&quot;org.freedesktop.systemd1&quot;, &quot;/org/freedesktop/systemd1&quot;, &quot;org.freedesktop.DBus.Peer&quot;, &quot;GetMachineId&quot;)">getmachineid</button>
+<button onclick="busCall(&quot;org.freedesktop.DBus&quot;, &quot;/org/freedesktop/DBus&quot;, &quot;org.freedesktop.DBus&quot;, &quot;ListNames&quot;)">listServices</button>
+<button onclick="busCall(&quot;org.mpris.MediaPlayer2.mpv&quot;, &quot;/org/mpris/MediaPlayer2&quot;, &quot;org.mpris.MediaPlayer2.Player&quot;, &quot;PlayPause&quot;)">playpause</button>
+<button onclick="busCallAddMatch(&quot;type=signal&quot;)">addmatch("type=signal")</button>
+<button onclick="BusHelper.setValuesLocal()">setValues()</button>
+<button onclick="busEmit(&quot;/&quot;,&quot;org.local.com&quot;,&quot;RandomNumber&quot;,&quot;u&quot;,[Math.round(Math.random()*100)])">emit randomnumber()</button>
+<button onclick="busEmit(&quot;/&quot;,&quot;org.local.com&quot;,&quot;someSignal&quot;,&quot;&quot;,[])">emit someSignal()</button>
+<button onclick="result.innerHTML = &quot;&quot;">clear</button>
+<hr>
+
+<pre id="result"></pre>
+
+<script>document.addEventListener('DOMContentLoaded', ()=>{
+    window?.busSignalEvents?.addEventListener("signal", function(evt) {
+        result.innerHTML += evt.msg.descShort + "\n";
+    });
+});
+
+</script>

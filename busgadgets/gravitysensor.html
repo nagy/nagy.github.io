@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- <title>gravitysensor - busgadget</title> -->
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/index.d0bdf00f.js" type="module"></script>
+<style>
+    html { font-size: 20px; }
+    button { display: block; width: calc(100% - 2em); font-weight:bold; padding: 1em; margin: 1em; }
+    h2 { color: #5d3026; }
+    a { color: #0000bb; font-family: sans-serif; }
+    @media (prefers-color-scheme:dark) {
+        body {background-color:black; color: white;}
+        button { background-color: black; color: white;}
+        a { color: #00bdfa; }
+        h2 { color: #f8dec0; }
+    }
+    .property { font-size: 2rem; }
+
+</style>
+
+<script>window.sens = new GravitySensor({
+    frequency: 5
+});
+sens.addEventListener("reading", ()=>{
+    let round = (num)=>Math.round(num * 10) / 10
+    ;
+    var x = round(sens.x), y = round(sens.y), z = round(sens.z);
+    busChangeProperty("/", "org.local.com", {
+        X: [
+            "d",
+            x
+        ],
+        Y: [
+            "d",
+            y
+        ],
+        Z: [
+            "d",
+            z
+        ]
+    });
+});
+
+</script>
+
+<div><a rel="up" href="/index.html">up</a></div>
+<div>wsaddr: <span id="wsaddr"></span> <span id="wsindicator"></span></div>
+<hr>
+
+<h2>Raw Mode</h2>
+<button onclick="sens.start()">start</button>
+<button onclick="sens.stop()">stop</button>
+
+<div class="property">X: <span bus-path="/" bus-interface="org.local.com" bus-member="X" id="resx"></span></div>
+<div class="property">Y: <span bus-path="/" bus-interface="org.local.com" bus-member="Y" id="resy"></span></div>
+<div class="property">Z: <span bus-path="/" bus-interface="org.local.com" bus-member="Z" id="resz"></span></div>
+<hr>
+
+<h2>Tolerance Mode</h2>
+<div>Tolerance: <input type="range" value="2" min="0" max="10" step="0.1" id="tolerance_range" oninput="tolerance_range_text.innerText=this.value"><span id="tolerance_range_text">2</span></div>
+<button disabled="" onclick="sens.start()">start</button>
+<button disabled="" onclick="sens.stop()">stop</button>
+<hr>
+
+<h2>Test Emit</h2>
+<button onclick="busChangeProperty(&quot;/&quot;, &quot;org.local.com&quot;, { X: [&quot;d&quot;, 5.0] , Y: [&quot;d&quot;, 6.0], Z: [&quot;d&quot;, 7.0]} )">busTestEmit()</button>
+<hr>
